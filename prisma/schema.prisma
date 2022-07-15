@@ -9,3 +9,66 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Users {
+  id Int @id @default(autoincrement())
+  email String 
+  password String
+  sessions Sessions[]
+  credentials Credentials[]
+  notes Notes[]
+  cards Cards[]
+  wifi Wifi[]
+  @@map("users")
+}
+
+model Sessions {
+  id Int @id @default(autoincrement())
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+  @@map("sessions")
+} 
+
+model Credentials {
+  id Int @id @default(autoincrement())
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+  title String
+  username String
+  password String
+  url String
+  @@map("credentials")
+}
+
+model Notes {
+  id Int @id @default(autoincrement())
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+  title String
+  note String
+  @@map("notes")
+}
+
+model Cards {
+  id Int @id @default(autoincrement())
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+  title String
+  number String
+  cvv String
+  name String
+  expirationDate String
+  mode String
+  virtual Boolean @default(false)
+  @@map("cards")
+}
+
+model Wifi {
+  id Int @id @default(autoincrement())
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+  title String
+  wifi String
+  password String
+  @@map("wifi")
+}
