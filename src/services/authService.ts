@@ -1,12 +1,10 @@
-async function emailExists(email: string) {
-    return false;
-}
+import { getUsersByEmail } from "../repositories/authRepositories.js"
 
-async function insertUser(data: object) {
-    return true
+async function emailExists(email: string) {
+    let result = await getUsersByEmail(email);
+    return result;
 }
 
 export const authServices = {
-    emailExists,
-    insertUser
+    emailExists
 }

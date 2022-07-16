@@ -1,6 +1,6 @@
-import { prisma } from "../database";
+import { prisma } from "../database.js";
 
-interface UserObject {
+export default interface UserObject {
     email: string,
     password: string
 }
@@ -12,4 +12,10 @@ export async function getUsersByEmail(email: string){
         }
     });
     return users;
+}
+
+export async function insertUser(Data: UserObject) {
+    await prisma.users.create({
+        data: Data
+    });    
 }
