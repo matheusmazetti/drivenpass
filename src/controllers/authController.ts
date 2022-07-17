@@ -4,5 +4,6 @@ import { authServices } from "../services/authService.js";
 
 export async function signUp(req: Request, res: Response) {
     let body: UserObject = req.body;
+    await authServices.insertUserWithNewData(body);
     res.sendStatus(201);
 }
