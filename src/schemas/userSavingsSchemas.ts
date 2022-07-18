@@ -2,7 +2,7 @@ import joi from 'joi';
 
 export const credentialsSchema = joi.object({
     title: joi.string().min(1).required(),
-    user: joi.string().min(1).required(),
+    username: joi.string().min(1).required(),
     password: joi.string().min(1).required(),
     url: joi.string().pattern(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/).required()
 });
