@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { createNewCredential } from '../controllers/userSavingsController.js';
+import { createNewCredential, deleteCredentialById, getAllCredentials, getCredential } from '../controllers/userSavingsController.js';
 import { checkToken } from '../middlewares/authMiddleware.js';
 
 const userSavingsRouter = Router();
 
-userSavingsRouter.post("/credentials", checkToken, createNewCredential);
-userSavingsRouter.get("/credentials", checkToken);
-userSavingsRouter.get("/credentials/:id", checkToken);
-userSavingsRouter.delete("/credentials/:id", checkToken);
+userSavingsRouter.post("/credentials", checkToken, createNewCredential); //ok
+userSavingsRouter.get("/credentials", checkToken, getAllCredentials); //ok
+userSavingsRouter.get("/credentials/:id", checkToken, getCredential); //ok
+userSavingsRouter.delete("/credentials/:id", checkToken, deleteCredentialById);
 
 userSavingsRouter.post("/notes", checkToken);
 userSavingsRouter.get("/notes", checkToken);

@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { checkTitleInCards, checkTitleInCredentials, checkTitleInWifi, insertCredentials } from '../repositories/userSavingsRepositories.js';
+import { checkTitleInCards, checkTitleInCredentials, checkTitleInWifi, insertCard, insertCredentials, insertWifi } from '../repositories/userSavingsRepositories.js';
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ async function createCard(data) {
     if(verify){
         throw 409
     }
-    await insertCredentials(data);
+    await insertCard(data);
 }
 
 async function createWifi(data) {
@@ -30,7 +30,7 @@ async function createWifi(data) {
     if(verify){
         throw 409
     }
-    await insertCredentials(data);
+    await insertWifi(data);
 }
 
 export const userSavingsServices = {
