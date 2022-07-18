@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createNewCard, createNewCredential, deleteCardById, deleteCredentialById, getAllCards, getAllCredentials, getCard, getCredential } from '../controllers/userSavingsController.js';
+import { createNewCard, createNewCredential, createNewWifi, deleteCardById, deleteCredentialById, deleteWifiById, getAllCards, getAllCredentials, getAllWifis, getCard, getCredential, getWifi } from '../controllers/userSavingsController.js';
 import { checkToken } from '../middlewares/authMiddleware.js';
 
 const userSavingsRouter = Router();
@@ -19,9 +19,9 @@ userSavingsRouter.get("/cards", checkToken, getAllCards);
 userSavingsRouter.get("/cards/:id", checkToken, getCard);
 userSavingsRouter.delete("/cards/:id", checkToken, deleteCardById);
 
-userSavingsRouter.post("/wifi", checkToken);
-userSavingsRouter.get("/wifi", checkToken);
-userSavingsRouter.get("/wifi/:id", checkToken);
-userSavingsRouter.delete("/wifi/:id", checkToken);
+userSavingsRouter.post("/wifi", checkToken, createNewWifi);
+userSavingsRouter.get("/wifi", checkToken, getAllWifis);
+userSavingsRouter.get("/wifi/:id", checkToken, getWifi);
+userSavingsRouter.delete("/wifi/:id", checkToken, deleteWifiById);
 
 export default userSavingsRouter;

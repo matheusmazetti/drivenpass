@@ -95,7 +95,7 @@ export async function getCards(userId: number){
     return Cards;
 }
 
-export async function getWifi(userId: number){
+export async function getWifis(userId: number){
     let wifi = await prisma.wifi.findMany({
         where: {
             userId: userId

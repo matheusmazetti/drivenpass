@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
-import { deleteCard, deleteCredential, getCardById, getCards, getCredentialById, getCredentials } from "../repositories/userSavingsRepositories.js";
-import { cardSchema, credentialsSchema } from "../schemas/userSavingsSchemas.js";
+import { deleteCard, deleteCredential, deleteWifi, getCardById, getCards, getCredentialById, getCredentials, getWifiById, getWifis } from "../repositories/userSavingsRepositories.js";
+import { cardSchema, credentialsSchema, wifiSchema } from "../schemas/userSavingsSchemas.js";
 import { authServices } from "../services/authService.js";
 import { userSavingsServices } from "../services/userSavingsService.js";
 
@@ -123,5 +123,66 @@ export async function deleteCardById(req: Request, res: Response) {
         throw 404
     }
     await deleteCard(CID);
+    res.sendStatus(200);
+}
+
+export async function createNewWifi(req: Request, res: Response) {
+    let WifiData = req.body;
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let { error } = wifiSchema.validate(WifiData);
+    if(error){
+        throw 422
+    }
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let newData = {...WifiData, userId: user.id}
+    await userSavingsServices.createWifi(newData);
+    res.sendStatus(201);
+}
+
+export async function getAllWifis(req: Request, res: Response) {
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let Wifis = await getWifis(user.id)
+    if(!Wifis){
+        throw 404
+    }
+    res.status(200).send(Wifis);
+}
+
+export async function getWifi(req: Request, res: Response) {
+    let WifiId = req.params.id;
+    let CID = parseInt(WifiId);
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let Wifi = await getWifiById(user.id, CID);
+    if(!Wifi){
+        throw 404
+    }
+
+    res.status(200).send(Wifi);
+}
+
+export async function deleteWifiById(req: Request, res: Response) {
+    let WifiId = req.params.id;
+    let CID = parseInt(WifiId);
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let Wifi = await getWifiById(user.id, CID);
+    if(!Wifi){
+        throw 404
+    }
+    await deleteWifi(CID);
     res.sendStatus(200);
 }
