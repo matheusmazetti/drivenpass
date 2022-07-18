@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
-import { deleteCard, deleteCredential, deleteWifi, getCardById, getCards, getCredentialById, getCredentials, getWifiById, getWifis } from "../repositories/userSavingsRepositories.js";
-import { cardSchema, credentialsSchema, wifiSchema } from "../schemas/userSavingsSchemas.js";
+import { deleteCard, deleteCredential, deleteNote, deleteWifi, getCardById, getCards, getCredentialById, getCredentials, getNotes, getNotesById, getWifiById, getWifis } from "../repositories/userSavingsRepositories.js";
+import { cardSchema, credentialsSchema, notesSchema, wifiSchema } from "../schemas/userSavingsSchemas.js";
 import { authServices } from "../services/authService.js";
 import { userSavingsServices } from "../services/userSavingsService.js";
 
@@ -184,5 +184,66 @@ export async function deleteWifiById(req: Request, res: Response) {
         throw 404
     }
     await deleteWifi(CID);
+    res.sendStatus(200);
+}
+
+export async function createNewNote(req: Request, res: Response) {
+    let NoteData = req.body;
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let { error } = notesSchema.validate(NoteData);
+    if(error){
+        throw 422
+    }
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let newData = {...NoteData, userId: user.id}
+    await userSavingsServices.createNote(newData);
+    res.sendStatus(201);
+}
+
+export async function getAllNotes(req: Request, res: Response) {
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let Notes = await getNotes(user.id);
+    if(!Notes){
+        throw 404
+    }
+    res.status(200).send(Notes);
+}
+
+export async function getNote(req: Request, res: Response) {
+    let NoteId = req.params.id;
+    let CID = parseInt(NoteId);
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let Note = await getNotesById(user.id, CID);
+    if(!Note){
+        throw 404
+    }
+
+    res.status(200).send(Note);
+}
+
+export async function deleteNoteById(req: Request, res: Response) {
+    let NoteId = req.params.id;
+    let CID = parseInt(NoteId);
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let Note = await getNotesById(user.id, CID)
+    if(!Note){
+        throw 404
+    }
+    await deleteNote(CID)
     res.sendStatus(200);
 }
