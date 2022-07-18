@@ -23,7 +23,7 @@ export async function loginMIddleware(req: Request, res: Response, next: NextFun
     let body: UserObject = req.body;
     let { error } = authSchema.validate(body);
     if(error){
-        throw {type: 422, message: "objeto não corresponde a documentação"}
+        throw 422;
     }
 
     next();

@@ -1,5 +1,9 @@
 import bcrypt from 'bcrypt';
-import UserObject, { getUsersByEmail, insertUser } from "../repositories/authRepositories.js"
+import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+import UserObject, { getUsersByEmail, insertUser } from "../repositories/authRepositories.js";
+
+dotenv.config();
 
 async function emailExists(email: string) {
     let result = await getUsersByEmail(email);
@@ -17,9 +21,11 @@ async function insertUserWithNewData(userObj: UserObject) {
 
 async function login(userData: UserObject) {
     let userDB = await getUsersByEmail(userData.email);
-    console.log(userDB);
     if(userDB && bcrypt.compareSync(userData.password, userDB.password)){
-        return true
+        let data = {email: userDB.email};
+        const secret = process.env.JWT_SECRET;
+        const token = jwt.sign(data, secret);
+        return token;
     } else {
         throw {type: 401, message: "usuário não cadastrado ou senha incorreta"}
     }

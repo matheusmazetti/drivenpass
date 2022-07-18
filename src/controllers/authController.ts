@@ -10,6 +10,6 @@ export async function signUp(req: Request, res: Response) {
 
 export async function login(req: Request, res: Response) {
     let body: UserObject = req.body;
-    await authServices.login(body);
-    res.sendStatus(200);
+    let token = await authServices.login(body);
+    res.status(200).send(token);
 }
