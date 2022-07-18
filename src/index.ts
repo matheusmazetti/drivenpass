@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 
 import authRouter from "./routes/authRouter.js";
 import { errorHandlingMiddleware } from "./middlewares/errorHandling.js";
+import userSavingsRouter from "./routes/userSavingsRouter.js";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 dotenv.config();
 
 app.use(authRouter);
+app.use(userSavingsRouter);
 app.use(errorHandlingMiddleware);
 
 const { PORT } = process.env;
