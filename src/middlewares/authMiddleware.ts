@@ -18,3 +18,13 @@ export async function signupMiddleware(req: Request, res: Response, next: NextFu
 
     next();
 }
+
+export async function loginMIddleware(req: Request, res: Response, next: NextFunction) {
+    let body: UserObject = req.body;
+    let { error } = authSchema.validate(body);
+    if(error){
+        throw {type: 422, message: "objeto não corresponde a documentação"}
+    }
+
+    next();
+}

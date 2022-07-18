@@ -7,3 +7,9 @@ export async function signUp(req: Request, res: Response) {
     await authServices.insertUserWithNewData(body);
     res.sendStatus(201);
 }
+
+export async function login(req: Request, res: Response) {
+    let body: UserObject = req.body;
+    await authServices.login(body);
+    res.sendStatus(200);
+}
