@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
-import { deleteCredential, getCredentialById, getCredentials } from "../repositories/userSavingsRepositories.js";
-import { credentialsSchema } from "../schemas/userSavingsSchemas.js";
+import { deleteCard, deleteCredential, getCardById, getCards, getCredentialById, getCredentials } from "../repositories/userSavingsRepositories.js";
+import { cardSchema, credentialsSchema } from "../schemas/userSavingsSchemas.js";
 import { authServices } from "../services/authService.js";
 import { userSavingsServices } from "../services/userSavingsService.js";
 
@@ -62,5 +62,66 @@ export async function deleteCredentialById(req: Request, res: Response) {
         throw 404
     }
     await deleteCredential(CID);
+    res.sendStatus(200);
+}
+
+export async function createNewCard(req: Request, res: Response) {
+    let CardData = req.body;
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let { error } = cardSchema.validate(CardData);
+    if(error){
+        throw 422
+    }
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let newData = {...CardData, userId: user.id}
+    await userSavingsServices.createCard(newData);
+    res.sendStatus(201);
+}
+
+export async function getAllCards(req: Request, res: Response) {
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let Cards = await getCards(user.id);
+    if(!Cards){
+        throw 404
+    }
+    res.status(200).send(Cards);
+}
+
+export async function getCard(req: Request, res: Response) {
+    let CardId = req.params.id;
+    let CID = parseInt(CardId);
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let Card = await getCardById(user.id, CID);
+    if(!Card){
+        throw 404
+    }
+
+    res.status(200).send(Card);
+}
+
+export async function deleteCardById(req: Request, res: Response) {
+    let CardId = req.params.id;
+    let CID = parseInt(CardId);
+    const token = req.headers.authorization?.replace("Bearer", "").trim();
+    let user = await authServices.getUserDataByToken(token);
+    if(!user){
+        throw 401
+    }
+    let Card = await getCardById(user.id, CID);
+    if(!Card){
+        throw 404
+    }
+    await deleteCard(CID);
     res.sendStatus(200);
 }
