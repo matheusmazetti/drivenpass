@@ -31,8 +31,15 @@ async function login(userData: UserObject) {
     }
 }
 
+async function getUserDataByToken(token: string) {
+    let tokenData = jwt.verify(token, process.env.JWT_SECRET);
+    let userData = await getUsersByEmail(tokenData.email);
+    return userData;
+}
+
 export const authServices = {
     emailExists,
     insertUserWithNewData,
-    login
+    login,
+    getUserDataByToken
 }
